@@ -7,18 +7,37 @@ import Topbar from "./components/Topbar";
 import Filters from "./components/Filters";
 import Contacts from "./components/Contacts";
 import Contact from "./components/Contact";
+import Loading from "./components/Loading";
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      contacts: [],
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    this.getContacts().then((allContacts) => {
+      this.setState({
+        loading: false,
+        contacts: allContacts,
+      });
+    });
+  }
+
+  async getContacts() {
+    let contacts = await fetch(
+      "https://5e82ac6c78337f00160ae496.mockapi.io/api/v1/contacts"
+    );
+    return await contacts.json();
+  }
+
   render() {
     return (
       <React.Fragment>
-        {/* <header className="topbar">
-          <div className="container">
-            <a href="/" className="topbar__logo">
-              <LogoSvg alt="Logo Instagram" />
-            </a>
-          </div>
-        </header> */}
         <Topbar>
           <LogoSvg />
         </Topbar>
@@ -29,15 +48,11 @@ class App extends React.Component {
 
         <div className="container">
           <Contacts className="contacts">
-            <Contact className="contact"></Contact>
-            <Contact className="contact" data={{
-              nome: "Eduardo",
-              telefone: "110013013",
-              pais: "Brasil",
-              admissao: "Admissão",
-              empresa: "Yndh",
-              departamento: "dpto"
-            }}></Contact>
+            <Contact></Contact>
+            {this.state.loading ? <Loading /> : null}
+            {this.state.contacts.map((contact) => {
+              return <Contact data={contact} key={contact.id} />;
+            })}
           </Contacts>
         </div>
       </React.Fragment>
