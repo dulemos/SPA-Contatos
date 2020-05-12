@@ -2,7 +2,16 @@ import React from 'react';
 
 class Topbar extends React.Component {
 	render() {
-		return (<div />);
+		return (
+			<header className="topbar">
+          		<div className="container">
+            <a href="/" className="topbar__logo">
+              {this.props.children}
+            </a>
+          </div>
+        </header>
+
+		);
 	}
 }
 
